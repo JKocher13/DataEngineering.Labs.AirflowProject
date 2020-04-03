@@ -39,7 +39,21 @@ Goals:
 
 	-Reports on the decades since billboard 100 was created (1960s-2020) on what kind attributes made songs popular in each decade.
 
-	-A song predictor for new songs coming out in 2020 that will predict if a song will be popular enough to make it to the top 10 of billboards list 
+	-A song predictor for new songs coming out in 2020 that will predict if a song will be popular enough to make it to the top 10 of billboards list
+
+
+Goals for this weekend:
+	
+	-Work soley with the Spotify API and the dataset I have to collect as much data as possible from the 1960-2019
+
+	-Add to airflow:
+	
+		-Clean data
+		-Find missing data
+		-Pull missing data from Spotify API
+		-Add missing data as much as possible 
+		-Split into 6 df
+		-Create some visualastion and reports
 
 Data sources - Spotify: https://developer.spotify.com
 Data source - billboard: https://rapidapi.com/LDVIN/api/billboard-api
