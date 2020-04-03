@@ -34,3 +34,11 @@ Goals:
 -Making sense of data:
 
 	-create reports on pulled, cleaned, and merged data
+
+-Desired Output:
+
+	-Reports on the decades since billboard 100 was created (1960s-2020) on what kind attributes made songs popular in each decade.
+
+	-A song predictor for new songs coming out in 2020 that will predict if a song will be popular enough to make it to the top 10 of billboards list 
+
+	
