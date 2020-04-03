@@ -41,4 +41,6 @@ Goals:
 
 	-A song predictor for new songs coming out in 2020 that will predict if a song will be popular enough to make it to the top 10 of billboards list 
 
-	
+Data sources - Spotify: https://developer.spotify.com
+Data source - billboard: https://rapidapi.com/LDVIN/api/billboard-api
+Data source - 1960s-2019 data set: https://data.world/kcmillersean/billboard-hot-100-1958-2017/workspace/file?filename=Hot+Stuff.csv
