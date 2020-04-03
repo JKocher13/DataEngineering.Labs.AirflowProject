@@ -2,6 +2,7 @@
 See picture in repo for picture of my spotify / billboard project
 
 Goals:
+
 -Figure out how to properly use airflow
 	-Start to learn how to use 2 APIs in airflow
 	-Start to learn how to pass data throuhg airflow
