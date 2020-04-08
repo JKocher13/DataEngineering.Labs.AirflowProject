@@ -7,6 +7,8 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 from datetime import datetime
+import sqlalchemy
+import pymysql
 
 
 default_args = {
@@ -32,10 +34,20 @@ def grab_data():
 	billboard_df = past_music.dataframes['hot_stuff_2']
 	billboard_df["year"] = billboard_df["weekid"].str[0:4]
 	billboard_df["year"] = billboard_df["year"].astype(int)
+	engine = sqlalchemy.create_engine('mysql+pymysql://root:zipcoder@localhost/music_db')
 	with open("/Users/jkocher/Documents/airflow_home/data/audio_features.pickle", 'wb') as f:
 		pickle.dump(features_df, f)
 	with open("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle", 'wb') as d:
 		pickle.dump(billboard_df, d)
+
+def downloaded_data_to_mysql():
+	engine = sqlalchemy.create_engine('mysql+pymysql://root:zipcoder@localhost/music_db')
+	features_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle")
+	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	 with engine.connect() as conn, conn.begin():
+        billboard_df.to_sql('billboard_rankings', conn, if_exists='replace')
+        features_df.to_sql('music_features', conn, if_exists='replace')
+
 
 def split_data_1960s():
 	billboard_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle")
@@ -134,9 +146,30 @@ def merge_2010s():
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2010s.pickle", 'wb') as d:
 	    pickle.dump(top2010_df, d)
 
+def cleaned_data_to_MySql():
+	top1960_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1960s.pickle")
+	top1970_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1970s.pickle")
+	top1980_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1980s.pickle")
+	top1990_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1990s.pickle")
+	top2000_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2000s.pickle")
+	top2010_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2010s.pickle")
+	with engine.connect() as conn, conn.begin():
+		top1960_df.to_sql('analysis_1960s', conn, if_exists='replace')
+		top1970_df.to_sql('analysis_1970s', conn, if_exists='replace')
+		top1980_df.to_sql('analysis_1980s', conn, if_exists='replace')
+		top1990_df.to_sql('analysis_1990s', conn, if_exists='replace')
+		top2000_df.to_sql('analysis_2000s', conn, if_exists='replace')
+		top2010_df.to_sql('analysis_2010s', conn, if_exists='replace')
+
+
 t1 = PythonOperator(
 	task_id = "download_from_data_world",
 	python_callable = grab_data,
+	dag = dag)
+
+t1a = PythonOperator(
+	task_id = "write_raw_data_to_sql",
+	python_callable = downloaded_data_to_mysql,
 	dag = dag)
 
 t2 = PythonOperator(
@@ -199,10 +232,15 @@ t12 = PythonOperator(
 	python_callable = merge_2010s,
 	dag = dag)
 
+t13 = PythonOperator(
+	task_id = "cleaned_data_to_MySql"
+	python_callable = cleaned_data_to_MySql,
+	dag = dag)
 
-t1 >> t2 >> t8
-t1 >> t3 >> t9
-t1 >> t4 >> t10
-t1 >> t5 >> t11
-t1 >> t6 >> t11
-t1 >> t7 >> t13
+t1 >> t1a
+t1 >> t2 >> t8 >> t13
+t1 >> t3 >> t9 >> t13
+t1 >> t4 >> t10 >> t13
+t1 >> t5 >> t11 >> t13
+t1 >> t6 >> t11 >> t13
+t1 >> t7 >> t13 >> t13
