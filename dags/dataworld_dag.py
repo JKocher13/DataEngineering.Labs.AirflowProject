@@ -34,20 +34,10 @@ def grab_data():
 	billboard_df = past_music.dataframes['hot_stuff_2']
 	billboard_df["year"] = billboard_df["weekid"].str[0:4]
 	billboard_df["year"] = billboard_df["year"].astype(int)
-	engine = sqlalchemy.create_engine('mysql+pymysql://root:zipcoder@localhost/music_db')
 	with open("/Users/jkocher/Documents/airflow_home/data/audio_features.pickle", 'wb') as f:
 		pickle.dump(features_df, f)
 	with open("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle", 'wb') as d:
 		pickle.dump(billboard_df, d)
-
-def downloaded_data_to_mysql():
-	engine = sqlalchemy.create_engine('mysql+pymysql://root:zipcoder@localhost/music_db')
-	features_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
-	 with engine.connect() as conn, conn.begin():
-        billboard_df.to_sql('billboard_rankings', conn, if_exists='replace')
-        features_df.to_sql('music_features', conn, if_exists='replace')
-
 
 def split_data_1960s():
 	billboard_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle")
@@ -99,7 +89,7 @@ def split_data_2010s():
 
 def merge_1960s():
 	blillboard_df_1960s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_1960s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top1960_df = pd.merge(blillboard_df_1960s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top1960_df= top1960_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1960s.pickle", 'wb') as d:
@@ -107,7 +97,7 @@ def merge_1960s():
 
 def merge_1970s():
 	blillboard_df_1970s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_1970s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top1970_df = pd.merge(blillboard_df_1970s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top1970_df= top1970_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1970s.pickle", 'wb') as d:
@@ -115,7 +105,7 @@ def merge_1970s():
 
 def merge_1980s():
 	blillboard_df_1980s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_1980s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top1980_df = pd.merge(blillboard_df_1980s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top1980_df= top1980_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1980s.pickle", 'wb') as d:
@@ -123,7 +113,7 @@ def merge_1980s():
 
 def merge_1990s():
 	blillboard_df_1990s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_1990s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top1990_df = pd.merge(blillboard_df_1990s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top1990_df= top1990_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1990s.pickle", 'wb') as d:
@@ -132,7 +122,7 @@ def merge_1990s():
 
 def merge_2000s():
 	blillboard_df_2000s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_2000s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top2000_df = pd.merge(blillboard_df_2000s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top2000_df= top2000_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2000s.pickle", 'wb') as d:
@@ -140,7 +130,7 @@ def merge_2000s():
 
 def merge_2010s():
 	blillboard_df_2010s = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_df_2010s.pickle")
-	spotify_df = pd.read_pickle("./data/audio_features.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/projects/DataEngineering.Labs.AirflowProject/data/audio_features.pickle")
 	top2010_df = pd.merge(blillboard_df_2010s, spotify_df, left_on = "songid", right_on = "songid", how= "left")
 	top2010_df= top2010_df.dropna(subset=["key"])
 	with open("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2010s.pickle", 'wb') as d:
@@ -153,6 +143,7 @@ def cleaned_data_to_MySql():
 	top1990_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1990s.pickle")
 	top2000_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2000s.pickle")
 	top2010_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2010s.pickle")
+	engine = sqlalchemy.create_engine('postgresql+psycopg2://jkocher:@localhost/music_db')
 	with engine.connect() as conn, conn.begin():
 		top1960_df.to_sql('analysis_1960s', conn, if_exists='replace')
 		top1970_df.to_sql('analysis_1970s', conn, if_exists='replace')
@@ -161,6 +152,13 @@ def cleaned_data_to_MySql():
 		top2000_df.to_sql('analysis_2000s', conn, if_exists='replace')
 		top2010_df.to_sql('analysis_2010s', conn, if_exists='replace')
 
+def downloaded_data_to_mysql():
+	engine = sqlalchemy.create_engine('postgresql+psycopg2://jkocher:@localhost/music_db')
+	billboard_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/billboard_rankings.pickle")
+	spotify_df = pd.read_pickle("/Users/jkocher/Documents/airflow_home/data/audio_features.pickle")
+	with engine.connect() as conn, conn.begin():
+		billboard_df.to_sql('billboard_rankings', conn, if_exists='replace')
+		spotify_df.to_sql('music_features', conn, if_exists='replace')
 
 t1 = PythonOperator(
 	task_id = "download_from_data_world",
@@ -225,22 +223,23 @@ t11 = PythonOperator(
 t12 = PythonOperator(
 	task_id = "merged_spotify_2000",
 	python_callable = merge_2000s,
-	dag = dag
+	dag = dag)
 
-t12 = PythonOperator(
+t13 = PythonOperator(
 	task_id = "merged_spotify_2010",
 	python_callable = merge_2010s,
 	dag = dag)
 
-t13 = PythonOperator(
-	task_id = "cleaned_data_to_MySql"
+t14 = PythonOperator(
+	task_id = "cleaned_data_to_mySql",
 	python_callable = cleaned_data_to_MySql,
 	dag = dag)
 
+
+t1 >> t2 >> t8 >> t14
+t1 >> t3 >> t9 >> t14
+t1 >> t4 >> t10 >> t14
+t1 >> t5 >> t11 >> t14
+t1 >> t6 >> t12 >> t14
+t1 >> t7 >> t13 >> t14
 t1 >> t1a
-t1 >> t2 >> t8 >> t13
-t1 >> t3 >> t9 >> t13
-t1 >> t4 >> t10 >> t13
-t1 >> t5 >> t11 >> t13
-t1 >> t6 >> t11 >> t13
-t1 >> t7 >> t13 >> t13
