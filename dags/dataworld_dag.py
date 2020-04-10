@@ -5,10 +5,12 @@ from datetime import timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.papermill_operator import PapermillOperator
 from airflow.utils.dates import days_ago
 from datetime import datetime
 import sqlalchemy
 import pymysql
+import papermill as pm
 
 
 default_args = {
@@ -235,11 +237,35 @@ t14 = PythonOperator(
 	python_callable = cleaned_data_to_MySql,
 	dag = dag)
 
+t15 = BashOperator(task_id="run_bash_example_notebook_60s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1960s.pickle -pyear_name 1960s",
+	dag = dag)
 
-t1 >> t2 >> t8 >> t14
-t1 >> t3 >> t9 >> t14
-t1 >> t4 >> t10 >> t14
-t1 >> t5 >> t11 >> t14
-t1 >> t6 >> t12 >> t14
-t1 >> t7 >> t13 >> t14
+t16 = BashOperator(task_id="run_bash_example_notebook_70s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1970s.pickle -pyear_name 1970s",
+	dag = dag)
+
+t17 = BashOperator(task_id="run_bash_example_notebook_80s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1980s.pickle -pyear_name 1980s",
+	dag = dag)
+
+t18 = BashOperator(task_id="run_bash_example_notebook_90s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_1990s.pickle -pyear_name 1990s",
+	dag = dag)
+
+t19 = BashOperator(task_id="run_bash_example_notebook_00s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2000s.pickle -pyear_name 2000s",
+	dag = dag)
+
+t20 = BashOperator(task_id="run_bash_example_notebook_10s",
+	bash_command= "papermill /Users/jkocher/Documents/airflow_home/data/Single_year.ipynb /Users/jkocher/Documents/airflow_home/data/Single_year_output.ipynb -p file_path /Users/jkocher/Documents/airflow_home/data/blillboard_spotify_2010s.pickle -pyear_name 2010s",
+	dag = dag)
+
+t1 >> t2 >> t8 >> t14 >> t15
+t1 >> t3 >> t9 >> t14 >> t16
+t1 >> t4 >> t10 >> t14 >> t17
+t1 >> t5 >> t11 >> t14 >> t18
+t1 >> t6 >> t12 >> t14 >> t19
+t1 >> t7 >> t13 >> t14 >> t20
 t1 >> t1a
+
